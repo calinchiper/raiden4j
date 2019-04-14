@@ -1,7 +1,5 @@
 package client;
 
-import static utils.Unchecked.*;
-
 import dto.ClosedState;
 import dto.EthereumAddress;
 import dto.IncreasedDeposit;
@@ -10,7 +8,8 @@ import dto.Channel;
 import dto.Payment;
 import dto.PaymentResponse;
 import http.RaidenService;
-import utils.DependencyInjector;
+import rx.Observable;
+import utils.DIContainer;
 import java.util.List;
 
 public class Raiden {
@@ -40,42 +39,34 @@ public class Raiden {
     return tokenNetworkAddress;
   }
 
-  public EthereumAddress getEthAddress() {
-    return execute(() -> raidenService.getEthereumAddress().execute().body());
+  public Observable<EthereumAddress> getEthAddress() {
+    return raidenService.getEthereumAddress();
   }
 
-  public List<Channel> getUnsettledChannels() {
-    return execute(() -> raidenService.getUnsettledChannels().execute().body());
+  public Observable<List<Channel>> getUnsettledChannels() {
+    return raidenService.getUnsettledChannels();
   }
 
-  public Channel openChannel(NewChannel newChannel) {
-    return execute(() -> raidenService.openChannel(newChannel).execute().body());
+  public Observable<Channel> openChannel(NewChannel newChannel) {
+    return raidenService.openChannel(newChannel);
   }
 
-  public Channel closeChannel(String partnerAddress) {
-    return execute(() ->
-        raidenService.closeChannel(tokenNetworkAddress, partnerAddress, new ClosedState())
-            .execute()
-            .body()
-    );
+  public Observable<Channel> closeChannel(String partnerAddress) {
+    return raidenService.closeChannel(tokenNetworkAddress, partnerAddress, new ClosedState());
   }
 
-  public Channel increaseDeposit(String partnerAddress, long increase) {
-    return execute(() ->
-        raidenService
-            .increaseDeposit(tokenNetworkAddress, partnerAddress, new IncreasedDeposit(increase))
-            .execute()
-            .body()
-    );
+  public Observable<Channel> increaseDeposit(String partnerAddress, long increase) {
+    IncreasedDeposit increasedDeposit = new IncreasedDeposit(increase);
+    return raidenService.increaseDeposit(tokenNetworkAddress, partnerAddress, increasedDeposit);
   }
 
-  public PaymentResponse makePayment(String targetAddress, long channelIdentifier, long amount) {
-    return execute(() ->
-        raidenService
-            .makePayment(tokenNetworkAddress, targetAddress, new Payment(amount, channelIdentifier))
-            .execute()
-            .body()
-    );
+  public Observable<PaymentResponse> makePayment(
+      String targetAddress,
+      long channelIdentifier,
+      long amount) {
+
+    Payment payment = new Payment(amount, channelIdentifier);
+    return raidenService.makePayment(tokenNetworkAddress, targetAddress, payment);
   }
 
   public static final class Builder {
@@ -100,10 +91,8 @@ public class Raiden {
     }
 
     public Raiden build() {
-      RaidenService raidenService = DependencyInjector
-          .getRetrofit("http://" + ip + ":" + port + "/")
-          .create(RaidenService.class);
-      return new Raiden(this, raidenService);
+      String baseUrl = "http://" + ip + ":" + port + "/";
+      return new Raiden(this, DIContainer.raidenService(baseUrl));
     }
   }
 }

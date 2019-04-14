@@ -15,34 +15,35 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import rx.Observable;
 
 public interface RaidenService {
 
   @GET("api/v1/address")
-  Call<EthereumAddress> getEthereumAddress();
+  Observable<EthereumAddress> getEthereumAddress();
 
   @GET("api/v1/channels")
-  Call<List<Channel>> getUnsettledChannels();
+  Observable<List<Channel>> getUnsettledChannels();
 
   @PUT("api/v1/channels")
-  Call<Channel> openChannel(@Body NewChannel newChannel);
+  Observable<Channel> openChannel(@Body NewChannel newChannel);
 
   @PATCH("api/v1/channels/{tokenAddress}/{partnerAddress}")
-  Call<Channel> closeChannel(
+  Observable<Channel> closeChannel(
       @Path("tokenAddress") String tokenAddress,
       @Path("partnerAddress") String partnerAddress,
       @Body ClosedState closedState
   );
 
   @PATCH("api/v1/channels/{tokenAddress}/{partnerAddress}")
-  Call<Channel> increaseDeposit(
+  Observable<Channel> increaseDeposit(
       @Path("tokenAddress") String tokenAddress,
       @Path("partnerAddress") String partnerAddress,
       @Body IncreasedDeposit increasedDeposit
   );
 
   @POST("api/v1/payments/{tokenAddress}/{targetAddress}")
-  Call<PaymentResponse> makePayment(
+  Observable<PaymentResponse> makePayment(
       @Path("tokenAddress") String tokenAddress,
       @Path("targetAddress") String targetAddress,
       @Body Payment payment
