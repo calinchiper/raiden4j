@@ -8,7 +8,7 @@ import dto.Channel;
 import dto.Payment;
 import dto.PaymentResponse;
 import http.RaidenService;
-import rx.Observable;
+import io.reactivex.Observable;
 import utils.DIContainer;
 import java.util.List;
 
@@ -45,6 +45,10 @@ public class Raiden {
 
   public Observable<List<Channel>> getUnsettledChannels() {
     return raidenService.getUnsettledChannels();
+  }
+
+  public Observable<Channel> getPartnerChannel(String partnerAddress) {
+    return raidenService.getPartnerChannel(tokenNetworkAddress, partnerAddress);
   }
 
   public Observable<Channel> openChannel(NewChannel newChannel) {

@@ -7,6 +7,7 @@ import dto.NewChannel;
 import dto.Channel;
 import dto.Payment;
 import dto.PaymentResponse;
+import io.reactivex.Observable;
 import java.util.List;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -14,7 +15,7 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
-import rx.Observable;
+
 
 public interface RaidenService {
 
@@ -23,6 +24,11 @@ public interface RaidenService {
 
   @GET("api/v1/channels")
   Observable<List<Channel>> getUnsettledChannels();
+
+  @GET("api/v1/channels/{tokenAddress}/{partnerAddress}")
+  Observable<Channel> getPartnerChannel(
+      @Path("tokenAddress") String tokenAddress,
+      @Path("partnerAddress") String partnerAddress);
 
   @PUT("api/v1/channels")
   Observable<Channel> openChannel(@Body NewChannel newChannel);
