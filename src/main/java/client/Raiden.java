@@ -3,43 +3,34 @@ package client;
 import dto.ClosedState;
 import dto.EthereumAddress;
 import dto.IncreasedDeposit;
-import dto.NewChannel;
-import dto.Channel;
+import model.Channel;
 import dto.Payment;
 import dto.PaymentResponse;
-import http.RaidenService;
 import io.reactivex.Observable;
-import utils.DIContainer;
+import java.net.URL;
+import di.DIContainer;
 import java.util.List;
 
 public class Raiden {
 
-  private final String ip;
-  private final int port;
   private final String tokenNetworkAddress;
-
   private final RaidenService raidenService;
 
-  private Raiden(Builder builder, RaidenService raidenService) {
-    this.ip = builder.ip;
-    this.port = builder.port;
-    this.tokenNetworkAddress = builder.tokenNetworkAddress;
+  private Raiden(String tokenNetworkAddress, RaidenService raidenService) {
+    this.tokenNetworkAddress = tokenNetworkAddress;
     this.raidenService = raidenService;
   }
 
-  public String getIp() {
-    return ip;
-  }
-
-  public int getPort() {
-    return port;
+  public static Raiden of(URL url, String tokenNetworkAddress) {
+    RaidenService raidenService = DIContainer.raidenService(url.toExternalForm());
+    return new Raiden(tokenNetworkAddress, raidenService);
   }
 
   public String getTokenNetworkAddress() {
     return tokenNetworkAddress;
   }
 
-  public Observable<EthereumAddress> getEthAddress() {
+  public Observable<EthereumAddress> getEthereumAddress() {
     return raidenService.getEthereumAddress();
   }
 
@@ -51,7 +42,7 @@ public class Raiden {
     return raidenService.getPartnerChannel(tokenNetworkAddress, partnerAddress);
   }
 
-  public Observable<Channel> openChannel(NewChannel newChannel) {
+  public Observable<Channel> openChannel(Channel newChannel) {
     return raidenService.openChannel(newChannel);
   }
 
@@ -73,30 +64,4 @@ public class Raiden {
     return raidenService.makePayment(tokenNetworkAddress, targetAddress, payment);
   }
 
-  public static final class Builder {
-
-    private String ip;
-    private int port;
-    private String tokenNetworkAddress;
-
-    public Builder ip(String ip) {
-      this.ip = ip;
-      return this;
-    }
-
-    public Builder port(int port) {
-      this.port = port;
-      return this;
-    }
-
-    public Builder tokenNetworkAddress(String tokenNetworkAddress) {
-      this.tokenNetworkAddress = tokenNetworkAddress;
-      return this;
-    }
-
-    public Raiden build() {
-      String baseUrl = "http://" + ip + ":" + port + "/";
-      return new Raiden(this, DIContainer.raidenService(baseUrl));
-    }
-  }
 }

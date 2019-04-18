@@ -1,10 +1,9 @@
-package http;
+package client;
 
 import dto.ClosedState;
 import dto.EthereumAddress;
 import dto.IncreasedDeposit;
-import dto.NewChannel;
-import dto.Channel;
+import model.Channel;
 import dto.Payment;
 import dto.PaymentResponse;
 import io.reactivex.Observable;
@@ -17,7 +16,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 
-public interface RaidenService {
+interface RaidenService {
 
   @GET("api/v1/address")
   Observable<EthereumAddress> getEthereumAddress();
@@ -31,7 +30,7 @@ public interface RaidenService {
       @Path("partnerAddress") String partnerAddress);
 
   @PUT("api/v1/channels")
-  Observable<Channel> openChannel(@Body NewChannel newChannel);
+  Observable<Channel> openChannel(@Body Channel newChannel);
 
   @PATCH("api/v1/channels/{tokenAddress}/{partnerAddress}")
   Observable<Channel> closeChannel(
