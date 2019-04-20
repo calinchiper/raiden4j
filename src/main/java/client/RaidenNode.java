@@ -8,22 +8,21 @@ import dto.Payment;
 import dto.PaymentResponse;
 import io.reactivex.Observable;
 import java.net.URL;
-import di.DIContainer;
 import java.util.List;
 
-public class Raiden {
+public class RaidenNode {
 
   private final String tokenNetworkAddress;
   private final RaidenService raidenService;
 
-  private Raiden(String tokenNetworkAddress, RaidenService raidenService) {
+  private RaidenNode(String tokenNetworkAddress, RaidenService raidenService) {
     this.tokenNetworkAddress = tokenNetworkAddress;
     this.raidenService = raidenService;
   }
 
-  public static Raiden of(URL url, String tokenNetworkAddress) {
-    RaidenService raidenService = DIContainer.raidenService(url.toExternalForm());
-    return new Raiden(tokenNetworkAddress, raidenService);
+  public static RaidenNode of(URL url, String tokenNetworkAddress) {
+    RaidenService raidenService = ServiceRegistry.raidenService(url.toExternalForm());
+    return new RaidenNode(tokenNetworkAddress, raidenService);
   }
 
   public String getTokenNetworkAddress() {
@@ -43,6 +42,7 @@ public class Raiden {
   }
 
   public Observable<Channel> openChannel(Channel newChannel) {
+    newChannel.setTokenAddress(tokenNetworkAddress);
     return raidenService.openChannel(newChannel);
   }
 
@@ -51,7 +51,7 @@ public class Raiden {
   }
 
   public Observable<Channel> increaseDeposit(String partnerAddress, long increase) {
-    IncreasedDeposit increasedDeposit = new IncreasedDeposit(increase);
+    final IncreasedDeposit increasedDeposit = new IncreasedDeposit(increase);
     return raidenService.increaseDeposit(tokenNetworkAddress, partnerAddress, increasedDeposit);
   }
 
@@ -60,7 +60,7 @@ public class Raiden {
       long channelIdentifier,
       long amount) {
 
-    Payment payment = new Payment(amount, channelIdentifier);
+    final Payment payment = new Payment(amount, channelIdentifier);
     return raidenService.makePayment(tokenNetworkAddress, targetAddress, payment);
   }
 

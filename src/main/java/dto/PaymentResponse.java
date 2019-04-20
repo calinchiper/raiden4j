@@ -70,4 +70,15 @@ public class PaymentResponse {
   public int hashCode() {
     return Objects.hash(initiatorAddress, targetAddress, tokenAddress, amount, identifier);
   }
+
+  @Override
+  public String toString() {
+    return "PaymentResponse{" +
+        "initiatorAddress='" + initiatorAddress + '\'' +
+        ", targetAddress='" + targetAddress + '\'' +
+        ", tokenAddress='" + tokenAddress + '\'' +
+        ", amount=" + amount +
+        ", identifier=" + identifier +
+        '}';
+  }
 }

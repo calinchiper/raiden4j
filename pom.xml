@@ -36,6 +36,11 @@
       <version>${retrofit.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.web3j</groupId>
+      <artifactId>core</artifactId>
+      <version>4.2.0</version>
+    </dependency>
+    <dependency>
       <groupId>com.squareup.retrofit2</groupId>
       <artifactId>converter-gson</artifactId>
       <version>${retrofit.version}</version>

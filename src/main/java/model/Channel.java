@@ -17,9 +17,8 @@ public class Channel {
   public Channel() {
   }
 
-  public Channel(String partnerAddress, String tokenAddress, long totalDeposit, int settleTimeout) {
+  public Channel(String partnerAddress, long totalDeposit, int settleTimeout) {
     this.partnerAddress = partnerAddress;
-    this.tokenAddress = tokenAddress;
     this.totalDeposit = totalDeposit;
     this.settleTimeout = settleTimeout;
   }
