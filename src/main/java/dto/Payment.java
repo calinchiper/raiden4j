@@ -4,9 +4,9 @@ import java.util.Objects;
 
 public class Payment {
   private final long amount;
-  private final long identifier;
+  private final int identifier;
 
-  public Payment(long amount, long identifier) {
+  public Payment(long amount, int identifier) {
     this.amount = amount;
     this.identifier = identifier;
   }
@@ -15,7 +15,7 @@ public class Payment {
     return amount;
   }
 
-  public long getIdentifier() {
+  public int getIdentifier() {
     return identifier;
   }
 

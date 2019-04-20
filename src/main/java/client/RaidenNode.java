@@ -57,7 +57,7 @@ public class RaidenNode {
 
   public Observable<PaymentResponse> makePayment(
       String targetAddress,
-      long channelIdentifier,
+      int channelIdentifier,
       long amount) {
 
     final Payment payment = new Payment(amount, channelIdentifier);
